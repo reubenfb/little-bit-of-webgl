@@ -5,30 +5,46 @@ var regl = require('regl')({
 });
 
 
-let convertScale = d3.scaleLinear().range([-1, 1]).domain([0, 1000]);
 
-let squareWidth = 100;
-let squareMargin = 1;
-let squaresPerRow = 1000/squareWidth;
-let finalPositions = [];
 
-for(var i = 0; i < (squaresPerRow * squaresPerRow); i++){
-	let square = [];
 
-	// column position
-	let colPosition = (i % squaresPerRow) * squareWidth + squareWidth/2;
-	square.push(convertScale(colPosition));
+function makeSquares(width, margin){
 
-	// row position
-	let rowPosition = Math.floor(i/squaresPerRow) * squareWidth + squareWidth/2;
-	square.push(convertScale(rowPosition));
+	let squares = {
+		width: width,
+		margin: margin,
+		finalPositions: []
+	}
 
-	finalPositions.push(square);
+	let squaresPerRow = 1000/width;
+	let convertScale = d3.scaleLinear().range([-1, 1]).domain([0, 1000]);
+
+
+	for(var i = 0; i < (squaresPerRow * squaresPerRow); i++){
+		let square = [];
+
+		// column position
+		let colPosition = (i % squaresPerRow) * width + width/2;
+		square.push(convertScale(colPosition));
+
+		// row position
+		let rowPosition = Math.floor(i/squaresPerRow) * width + width/2;
+		square.push(convertScale(rowPosition));
+
+		squares.finalPositions.push(square);
+
+	}
+
+	return squares;
 
 }
 
+let squares = makeSquares(5, 1);
 
-const drawPoints = regl({
+console.log(squares.finalPositions.length)
+
+
+const drawSquares = regl({
 
   frag: `
   precision mediump float;
@@ -54,16 +70,16 @@ const drawPoints = regl({
 
   uniforms: {
     color: [1, 0, 0, 1],
-    pointWidth: squareWidth - squareMargin * 2
+    pointWidth: squares.width - squares.margin * 2
   },
 
-  count: finalPositions.length,
+  count: squares.finalPositions.length,
   primitive: 'points'
 });
 
 
 
-drawPoints({
-	position: finalPositions
+drawSquares({
+	position: squares.finalPositions
 });
 
