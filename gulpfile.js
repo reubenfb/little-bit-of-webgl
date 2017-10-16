@@ -5,6 +5,7 @@ var jade = require('gulp-jade');
 var sass = require('gulp-sass');
 var runSequence = require('run-sequence');
 var browserify = require('browserify');
+var babelify = require('babelify');
 var uglify = require('gulp-uglify');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
@@ -42,6 +43,7 @@ gulp.task('sass', function () {
 
 gulp.task('scripts', function() {
   return browserify('./src/js/app.js')
+    .transform('babelify', { presets: ['es2015'] })
     .bundle()
     .pipe(source('bundle.js'))
     .pipe(buffer())
