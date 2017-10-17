@@ -34,7 +34,7 @@ for(var i = 0; i < totalLeg; i++){
     squares.color.push([0, 0, 1, 1]);
   }
   else if(i < demLeg + otherLeg){
-    squares.color.push([0.5, 0.5, 0.5, 1]);
+    squares.color.push([0.7, 0.7, 0.7, 1]);
   }
   else{
     squares.color.push([1, 0, 0, 1]);
@@ -84,20 +84,4 @@ const drawSquares = regl({
 drawSquares({
 	position: squares.position,
   color: squares.color
-});
-
-d3.select('body').on('click', function(){
-
-  squares.color.forEach(function(color){
-    color[3] = color[3] - Math.random()/15;
-    if(color[3] < 0){
-      color[3] == 0;
-    }
-  })
-
-  drawSquares({
-    position: squares.position,
-    color: squares.color
-  });
-
 });
