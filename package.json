@@ -22,7 +22,7 @@
   "dependencies": {
     "babelify": "^7.3.0",
     "browserify": "^14.4.0",
-    "d3": "^4.10.2",
+    "d3": "^4.11.0",
     "d3-scale": "^1.0.6",
     "gulp": "^3.9.1",
     "gulp-gh-pages": "^0.5.4",

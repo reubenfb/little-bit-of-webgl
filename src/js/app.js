@@ -1,85 +1,103 @@
-var d3 = require('d3-scale');
+const d3 = require('d3');
 
-var regl = require('regl')({
+const regl = require('regl')({
 	container: document.getElementsByClassName('regl-container')[0]
 });
 
+const totalLeg = 7384;
+const demLeg = 3300;
+const repLeg = 3965;
+const otherLeg = totalLeg - demLeg - repLeg;
 
-
-
-
-function makeSquares(width, margin){
-
-	let squares = {
-		width: width,
-		margin: margin,
-		finalPositions: []
-	}
-
-	let squaresPerRow = 1000/width;
-	let convertScale = d3.scaleLinear().range([-1, 1]).domain([0, 1000]);
-
-
-	for(var i = 0; i < (squaresPerRow * squaresPerRow); i++){
-		let square = [];
-
-		// column position
-		let colPosition = (i % squaresPerRow) * width + width/2;
-		square.push(convertScale(colPosition));
-
-		// row position
-		let rowPosition = Math.floor(i/squaresPerRow) * width + width/2;
-		square.push(convertScale(rowPosition));
-
-		squares.finalPositions.push(square);
-
-	}
-
-	return squares;
-
+let squares = {
+	width: 10,
+	margin: 1,
+	position: [],
+  color: []
 }
 
-let squares = makeSquares(5, 1);
+const squaresPerRow = 1000/squares.width;
+const convertScale = d3.scaleLinear().range([-1, 1]).domain([0, 1000]);
 
-console.log(squares.finalPositions.length)
+for(var i = 0; i < totalLeg; i++){
+	let square = [];
 
+	let colPosition = (i % squaresPerRow) * squares.width + squares.width/2;
+	square.push(convertScale(colPosition));
+
+	let rowPosition = Math.floor(i/squaresPerRow) * squares.width + squares.width/2;
+	square.push(-convertScale(rowPosition));
+
+	squares.position.push(square);
+
+  if(i < demLeg){
+    squares.color.push([0, 0, 1, 1]);
+  }
+  else if(i < demLeg + otherLeg){
+    squares.color.push([0.5, 0.5, 0.5, 1]);
+  }
+  else{
+    squares.color.push([1, 0, 0, 1]);
+  }
+
+}
 
 const drawSquares = regl({
 
   frag: `
   precision mediump float;
-  uniform vec4 color;
+  varying vec4 fragColor;
   void main () {
-    gl_FragColor = color;
+    gl_FragColor = fragColor;
   }`,
 
   vert: `
   precision mediump float;
   attribute vec2 position;
+  attribute vec4 color;
+  varying vec4 fragColor;
   uniform float pointWidth;
   void main () {
   	gl_PointSize = pointWidth;
     gl_Position = vec4(position, 0, 1);
+    fragColor = color;
   }`,
 
   attributes: {
     position: function(context, props){
     	return props.position;
+    },
+    color: function(context, props){
+      return props.color;
     }
   },
 
   uniforms: {
-    color: [1, 0, 0, 1],
     pointWidth: squares.width - squares.margin * 2
   },
 
-  count: squares.finalPositions.length,
+  count: totalLeg,
   primitive: 'points'
 });
 
 
-
 drawSquares({
-	position: squares.finalPositions
+	position: squares.position,
+  color: squares.color
 });
 
+d3.select('body').on('click', function(){
+
+  squares.color.forEach(function(color){
+    color[3] = color[3] - Math.random()/15;
+    if(color[3] < 0){
+      color[3] == 0;
+    }
+  })
+
+  drawSquares({
+    position: squares.position,
+    color: squares.color
+  });
+
+});
