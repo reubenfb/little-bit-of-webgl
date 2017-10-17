@@ -34,7 +34,7 @@ for(var i = 0; i < totalLeg; i++){
     squares.color.push([0, 0, 1, 1]);
   }
   else if(i < demLeg + otherLeg){
-    squares.color.push([0.5, 0.5, 0.5, 1]);
+    squares.color.push([0.7, 0.7, 0.7, 1]);
   }
   else{
     squares.color.push([1, 0, 0, 1]);
