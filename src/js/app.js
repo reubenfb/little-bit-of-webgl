@@ -44,13 +44,6 @@ for(var i = 0; i < totalLeg; i++){
 
 const drawSquares = regl({
 
-  frag: `
-  precision mediump float;
-  varying vec4 fragColor;
-  void main () {
-    gl_FragColor = fragColor;
-  }`,
-
   vert: `
   precision mediump float;
   attribute vec2 position;
@@ -58,9 +51,16 @@ const drawSquares = regl({
   varying vec4 fragColor;
   uniform float pointWidth;
   void main () {
-  	gl_PointSize = pointWidth;
+    gl_PointSize = pointWidth;
     gl_Position = vec4(position, 0, 1);
     fragColor = color;
+  }`,
+
+  frag: `
+  precision mediump float;
+  varying vec4 fragColor;
+  void main () {
+    gl_FragColor = fragColor;
   }`,
 
   attributes: {
