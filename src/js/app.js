@@ -30,4 +30,4 @@ const drawSquares = regl({
   primitive: 'points'
 });
 
-drawSquares({});
+drawSquares();
