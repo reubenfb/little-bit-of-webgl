@@ -18,10 +18,10 @@ const convertScale = d3.scaleLinear().range([-1, 1]).domain([0, 1000]);
 for(var i = 0; i < totalLeg; i++){
 	let square = [];
 
-	let colPosition = (i % squaresPerRow) * squares.width + squares.width/2;
+	let colPosition = (i % squaresPerRow) * squares.width + squares.width/2 - 1;
 	square.push(convertScale(colPosition));
 
-	let rowPosition = Math.floor(i/squaresPerRow) * squares.width + squares.width/2;
+	let rowPosition = Math.floor(i/squaresPerRow) * squares.width + squares.width/2 - 1;
 	square.push(-convertScale(rowPosition));
 
 	squares.position.push(square);
@@ -29,20 +29,20 @@ for(var i = 0; i < totalLeg; i++){
 
 const drawSquares = regl({
 
-  frag: `
-  precision mediump float;
-  uniform vec4 color;
-  void main () {
-    gl_FragColor = color;
-  }`,
-
   vert: `
   precision mediump float;
   attribute vec2 position;
   uniform float pointWidth;
   void main () {
-  	gl_PointSize = pointWidth;
+    gl_PointSize = pointWidth;
     gl_Position = vec4(position, 0, 1);
+  }`,
+
+  frag: `
+  precision mediump float;
+  uniform vec4 color;
+  void main () {
+    gl_FragColor = color;
   }`,
 
   attributes: {
@@ -52,7 +52,7 @@ const drawSquares = regl({
   },
 
   uniforms: {
-    pointWidth: squares.width - squares.margin * 2,
+    pointWidth: squares.width * window.devicePixelRatio - squares.margin * window.devicePixelRatio * 2,
     color: [1, 0, 0, 1]
   },
 
