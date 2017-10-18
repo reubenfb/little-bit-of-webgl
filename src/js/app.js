@@ -91,7 +91,7 @@ d3.select('body').on('click', function(){
   squares.color.forEach(function(color){
     color[3] = color[3] - Math.random()/15;
     if(color[3] < 0){
-      color[3] == 0;
+      color[3] = 0;
     }
   })
 
